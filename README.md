@@ -1,4 +1,4 @@
-# 무인체계 SW 개발 기초 세미나
+# SW 개발 기초 세미나
 
 C# / WPF (.NET 8) · Visual Studio 2022
 
