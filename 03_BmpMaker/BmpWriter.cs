@@ -19,12 +19,24 @@ namespace BmpMaker
         private const short bitsPerPixel = 24;    // 픽셀당 비트 수 (R,G,B 각 8bit)
         private const int pixelsPerMeter = 3780;  // 해상도 96 DPI ≒ 3780 픽셀/m (인쇄용 정보, 화면 표시엔 영향 X)
 
+        /// <summary>한 줄(Row) 바이트 수 : 픽셀당 3byte, 4의 배수로 올림</summary>
+        public static int GetRowSize(int width)
+        {
+            return (width * 3 + 3) / 4 * 4;
+        }
+
+        /// <summary>파일 크기 미리 계산 = 헤더 54 + 한 줄 크기 x 세로 (무압축이라 정확히 예측 가능)</summary>
+        public static int CalculateFileSize(int width, int height)
+        {
+            return fileHeaderSize + infoHeaderSize + GetRowSize(width) * height;
+        }
+
         /// <summary>
         /// 지정한 단색(red, green, blue)으로 채운 BMP 파일 생성
         /// </summary>
         public static void Save(string filePath, int width, int height, byte red, byte green, byte blue)
         {
-            int rowSize = (width * 3 + 3) / 4 * 4;               // 한 줄 바이트 수를 4의 배수로 올림
+            int rowSize = GetRowSize(width);                     // 한 줄 바이트 수 (4의 배수)
             int imageSize = rowSize * height;                    // 픽셀 데이터 전체 크기
             int pixelOffset = fileHeaderSize + infoHeaderSize;   // 픽셀 데이터 시작 위치 = 54
             int fileSize = pixelOffset + imageSize;              // 전체 파일 크기
